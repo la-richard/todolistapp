@@ -1,0 +1,17 @@
+<.simple_form :let={f} for={@changeset} action={@action}>
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+  <.input field={f[:title]} type="text" label="Title" />
+  <.input field={f[:details]} type="textarea" label="Details (Optional)" />
+  <.input
+    field={f[:status]}
+    type="select"
+    label="Status"
+    prompt="Choose a value"
+    options={get_status_opts()}
+  />
+  <:actions>
+    <.button>Save Task</.button>
+  </:actions>
+</.simple_form>

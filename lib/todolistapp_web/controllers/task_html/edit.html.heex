@@ -1,0 +1,8 @@
+<.header>
+  Edit Task <%= @task.id %>
+  <:subtitle>Use this form to manage task records in your database.</:subtitle>
+</.header>
+
+<.task_form changeset={@changeset} action={~p"/#{@task}"} />
+
+<.back navigate={~p"/"}>Back to tasks</.back>
