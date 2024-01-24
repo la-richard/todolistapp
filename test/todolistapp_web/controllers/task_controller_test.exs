@@ -10,7 +10,7 @@ defmodule TodolistappWeb.TaskControllerTest do
   describe "index" do
     test "lists all tasks", %{conn: conn} do
       conn = get(conn, ~p"/")
-      assert html_response(conn, 200) =~ "Listing Tasks"
+      assert html_response(conn, 200) =~ "Tasks"
     end
   end
 
@@ -29,7 +29,7 @@ defmodule TodolistappWeb.TaskControllerTest do
       assert redirected_to(conn) == ~p"/#{id}"
 
       conn = get(conn, ~p"/#{id}")
-      assert html_response(conn, 200) =~ "Task #{id}"
+      assert html_response(conn, 200) =~ "some title"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -43,7 +43,7 @@ defmodule TodolistappWeb.TaskControllerTest do
 
     test "renders form for editing chosen task", %{conn: conn, task: task} do
       conn = get(conn, ~p"/#{task}/edit")
-      assert html_response(conn, 200) =~ "Edit Task"
+      assert html_response(conn, 200) =~ "Edit #{task.title}"
     end
   end
 
@@ -60,7 +60,7 @@ defmodule TodolistappWeb.TaskControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, task: task} do
       conn = put(conn, ~p"/#{task}", task: @invalid_attrs)
-      assert html_response(conn, 200) =~ "Edit Task"
+      assert html_response(conn, 200) =~ "#{task.title}"
     end
   end
 
