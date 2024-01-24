@@ -1,6 +1,5 @@
 <.header>
-  Task <%= @task.id %>
-  <:subtitle>This is a task record from your database.</:subtitle>
+  <%= @task.title %>
   <:actions>
     <.link href={~p"/#{@task}/edit"}>
       <.button>Edit task</.button>
@@ -9,9 +8,8 @@
 </.header>
 
 <.list>
-  <:item title="Title"><%= @task.title %></:item>
-  <:item title="Details"><%= @task.details %></:item>
-  <:item title="Status"><%= @task.status %></:item>
+  <:item title="Details"><%= if @task.details != nil, do: @task.details, else: "N/A" %></:item>
+  <:item title="Status"><%= format_status(@task.status) %></:item>
 </.list>
 
 <.back navigate={~p"/"}>Back to tasks</.back>

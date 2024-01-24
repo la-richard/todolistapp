@@ -1,6 +1,6 @@
 <.header>
-  Edit Task <%= @task.id %>
-  <:subtitle>Use this form to manage task records in your database.</:subtitle>
+  Edit <%= @task.title %>
+  <:subtitle>Update an existing task.</:subtitle>
 </.header>
 
 <.task_form changeset={@changeset} action={~p"/#{@task}"} />

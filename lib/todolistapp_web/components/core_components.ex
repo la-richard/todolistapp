@@ -536,10 +536,10 @@ defmodule TodolistappWeb.CoreComponents do
   def list(assigns) do
     ~H"""
     <div class="mt-14">
-      <dl class="-my-4 divide-y divide-zinc-100">
-        <div :for={item <- @item} class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
-          <dt class="w-1/4 flex-none text-zinc-500"><%= item.title %></dt>
-          <dd class="text-zinc-700"><%= render_slot(item) %></dd>
+      <dl class="-my-4 divide-y divide-zinc-100 flex flex-col gap-4">
+        <div :for={item <- @item} class ="flex flex-col text-sm leading-6">
+          <dt class="h-fit flex-none text-zinc-500 font-bold text-base"><%= item.title %></dt>
+          <dd class="text-zinc-700 break-words whitespace-pre-wrap"><%= render_slot(item) %></dd>
         </div>
       </dl>
     </div>
