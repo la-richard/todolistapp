@@ -9,7 +9,9 @@
 
 <.table id="tasks" rows={@tasks} row_click={&JS.navigate(~p"/#{&1}")}>
   <:col :let={task} label="Status" class="w-14">
-    <.task_status status={task.status} />
+    <div class="flex justify-center">
+      <.task_status status={task.status} />
+    </div>
   </:col>
   <:col :let={task} label="Title"><%= task.title %></:col>
   <:action :let={task}>
