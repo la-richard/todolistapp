@@ -8,8 +8,15 @@
 </.header>
 
 <.list>
-  <:item title="Details"><%= if @task.details != nil, do: @task.details, else: "N/A" %></:item>
-  <:item title="Status"><%= format_status(@task.status) %></:item>
+  <:item title="Details">
+    <div class="break-words whitespace-pre-wrap"><%= if @task.details != nil, do: @task.details, else: "N/A" %></div>
+  </:item>
+  <:item title="Status">
+    <div class="h-14 flex flex-row items-center gap-2">
+      <.task_status status={@task.status} />
+      <%= format_status(@task.status) %>
+    </div>
+  </:item>
 </.list>
 
 <.back navigate={~p"/"}>Back to tasks</.back>

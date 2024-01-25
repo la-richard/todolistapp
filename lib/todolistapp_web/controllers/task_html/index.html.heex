@@ -8,8 +8,10 @@
 </.header>
 
 <.table id="tasks" rows={@tasks} row_click={&JS.navigate(~p"/#{&1}")}>
+  <:col :let={task} label="Status" class="w-14">
+    <.task_status status={task.status} />
+  </:col>
   <:col :let={task} label="Title"><%= task.title %></:col>
-  <:col :let={task} label="Status"><%= format_status(task.status) %></:col>
   <:action :let={task}>
     <div class="sr-only">
       <.link navigate={~p"/#{task}"}>Show</.link>
