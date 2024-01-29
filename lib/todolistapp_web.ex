@@ -86,6 +86,7 @@ defmodule TodolistappWeb do
       # Core UI components and translation
       import TodolistappWeb.CoreComponents
       import TodolistappWeb.Gettext
+      import TodolistappWeb.TaskStatus
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
