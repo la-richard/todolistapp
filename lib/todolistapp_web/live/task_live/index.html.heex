@@ -1,39 +1,41 @@
 <.header>
   Tasks
   <:actions>
-    <.link patch={~p"/live/new"}>
+    <.link patch={~p"/new"}>
       <.button>New Task</.button>
     </.link>
   </:actions>
 </.header>
 
-<.table id="tasks" rows={@streams.tasks} row_click={fn {_id, task} -> JS.navigate(~p"/live/#{task}/show") end}>
+<.table id="tasks" rows={@streams.tasks} row_click={fn {_id, task} -> JS.navigate(~p"/#{task}/show") end}>
   <:col :let={{_id, task}} label="Status" class="w-14">
     <div class="flex justify-center">
       <.task_status status={task.status} />
     </div>
   </:col>
-  <:col :let={{_id, task}} label="Title"><%= task.title %></:col>
+  <:col :let={{_id, task}} label="Title">
+    <%= task.title %>
+  </:col>
   <:action :let={{_id, task}}>
     <div class="sr-only">
-      <.link navigate={~p"/live/#{task}/show"}>Show</.link>
+      <.link navigate={~p"/#{task}/show"}>Show</.link>
     </div>
-    <.link patch={~p"/live/#{task}/edit"}>Edit</.link>
+    <.link patch={~p"/#{task}/edit"}>Edit</.link>
   </:action>
   <:action :let={{_id, task}}>
-    <.link href={~p"/live/#{task}"} method="delete" data-confirm="Are you sure?">
+    <.link phx-click={JS.push("delete", value: %{id: task.id})} data-confirm="Are you sure?">
       Delete
     </.link>
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="task-modal" show on_cancel={JS.patch(~p"/live")}>
+<.modal :if={@live_action in [:new, :edit]} id="task-modal" show on_cancel={JS.patch(~p"/")}>
   <.live_component
     module={TodolistappWeb.TaskLive.TaskForm}
     id={@task.id || :new}
     title={@page_title}
     action={@live_action}
     task={@task}
-    patch={~p"/live"}
+    patch={~p"/"}
   />
 </.modal>

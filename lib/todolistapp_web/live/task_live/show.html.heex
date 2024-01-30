@@ -1,7 +1,7 @@
 <.header>
   <%= @task.title %>
   <:actions>
-    <.link patch={~p"/live/#{@task}/show/edit"}>
+    <.link patch={~p"/#{@task}/show/edit"}>
       <.button>Edit task</.button>
     </.link>
   </:actions>
@@ -19,15 +19,15 @@
   </:item>
 </.list>
 
-<.back navigate={~p"/live"}>Back to tasks</.back>
+<.back navigate={~p"/"}>Back to tasks</.back>
 
-<.modal :if={@live_action == :edit} id="task-modal" show on_cancel={JS.patch(~p"/live/#{@task}/show")}>
+<.modal :if={@live_action == :edit} id="task-modal" show on_cancel={JS.patch(~p"/#{@task}/show")}>
   <.live_component
     module={TodolistappWeb.TaskLive.TaskForm}
     id={@task.id}
     title={@page_title}
     action={@live_action}
     task={@task}
-    patch={~p"/live/#{@task}/show"}
+    patch={~p"/#{@task}/show"}
   />
 </.modal>

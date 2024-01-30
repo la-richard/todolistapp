@@ -17,7 +17,12 @@ defmodule TodolistappWeb.Router do
   scope "/", TodolistappWeb do
     pipe_through :browser
 
-    resources "/", TaskController
+    live "/", TaskLive.Index, :index
+    live "/new", TaskLive.Index, :new
+
+    live "/:id/show", TaskLive.Show, :show
+    live "/:id/show/edit", TaskLive.Show, :edit
+    live "/:id/edit", TaskLive.Index, :edit
   end
 
   # Other scopes may use custom stacks.

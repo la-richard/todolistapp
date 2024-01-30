@@ -29,4 +29,16 @@ defmodule TodolistappWeb.TaskLive.Index do
     |> assign(:page_title, "To-Do List")
     |> assign(:task, nil)
   end
+
+  def handle_info({TodolistappWeb.TaskLive.TaskForm, {:saved, task}}, socket) do
+    {:noreply, stream_insert(socket, :tasks, task)}
+  end
+
+  def handle_event("delete", %{"id" => id}, socket) do
+    task = Tasks.get_task!(id)
+    {:ok, _} = Tasks.delete_task(task)
+
+    {:noreply, socket |> stream_delete(:tasks, task) |> put_flash(:info, "Task deleted successfully!")}
+  end
+
 end
