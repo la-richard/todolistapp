@@ -58,13 +58,13 @@ defmodule Todolistapp.Tasks do
   defp rank_created_task do
     highest_rank_task = Repo.one(from(t in Task, order_by: [desc: t.rank], limit: 1));
 
-    if highest_rank_task, do: "5000", else: get_next_unique_rank(increment_rank(highest_rank_task.rank))
+    if highest_rank_task, do: get_next_unique_rank(increment_rank(highest_rank_task.rank)), else: "5000"
   end
 
   defp get_next_unique_rank(rank) do
     task = Repo.one(from(t in Task, where: t.rank == ^rank))
 
-    if task, do: rank, else: get_next_unique_rank(increment_rank(rank, 5))
+    if task, do: get_next_unique_rank(increment_rank(rank, 5)), else: rank
   end
 
   defp increment_rank(rank, step \\ 100) do
@@ -74,7 +74,7 @@ defmodule Todolistapp.Tasks do
   defp get_prev_unique_rank(rank) do
     task = Repo.one(from(t in Task, where: t.rank == ^rank))
 
-    if task, do: rank, else: get_prev_unique_rank(decrement_rank(rank, 5))
+    if task, do: get_prev_unique_rank(decrement_rank(rank, 5)), else: rank
   end
 
   defp decrement_rank(rank, step \\ 100) do
