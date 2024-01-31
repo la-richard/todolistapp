@@ -156,7 +156,7 @@ defmodule Todolistapp.Tasks do
     next_rank = String.to_integer(next_task.rank)
     distance = abs(next_rank - previous_rank)
     new_rank = to_string(previous_rank + div(distance, 2))
-    IO.inspect(new_rank)
+
     get_next_unique_rank(new_rank)
   end
 end
