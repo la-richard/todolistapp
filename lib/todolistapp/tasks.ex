@@ -18,7 +18,7 @@ defmodule Todolistapp.Tasks do
 
   """
   def list_tasks do
-    Repo.all(Task)
+    Repo.all(from(t in Task, order_by: [asc: t.rank]))
   end
 
   @doc """
@@ -51,8 +51,34 @@ defmodule Todolistapp.Tasks do
   """
   def create_task(attrs \\ %{}) do
     %Task{}
-    |> Task.changeset(attrs)
+    |> Task.changeset(Map.merge(%{"rank" => rank_created_task()}, attrs))
     |> Repo.insert()
+  end
+
+  defp rank_created_task do
+    highest_rank_task = Repo.one(from(t in Task, order_by: [desc: t.rank], limit: 1));
+
+    if highest_rank_task, do: "5000", else: get_next_unique_rank(increment_rank(highest_rank_task.rank))
+  end
+
+  defp get_next_unique_rank(rank) do
+    task = Repo.one(from(t in Task, where: t.rank == ^rank))
+
+    if task, do: rank, else: get_next_unique_rank(increment_rank(rank, 5))
+  end
+
+  defp increment_rank(rank, step \\ 100) do
+    to_string(String.to_integer(rank) + step)
+  end
+
+  defp get_prev_unique_rank(rank) do
+    task = Repo.one(from(t in Task, where: t.rank == ^rank))
+
+    if task, do: rank, else: get_prev_unique_rank(decrement_rank(rank, 5))
+  end
+
+  defp decrement_rank(rank, step \\ 100) do
+    to_string(String.to_integer(rank) - step)
   end
 
   @doc """
@@ -100,5 +126,37 @@ defmodule Todolistapp.Tasks do
   """
   def change_task(%Task{} = task, attrs \\ %{}) do
     Task.changeset(task, attrs)
+  end
+
+  def reorder_task(task_id, previous_task_id, next_task_id) do
+    task = Repo.get(Task, task_id)
+    previous_task = if previous_task_id, do: Repo.get(Task, previous_task_id), else: nil
+    next_task = if next_task_id, do: Repo.get(Task, next_task_id), else: nil
+
+    rank = rank_reordered_task(
+      previous_task,
+      next_task
+    )
+
+    task
+    |> Task.changeset(%{"rank" => rank})
+    |> Repo.update()
+  end
+
+  defp rank_reordered_task(nil, next_task) do
+    get_prev_unique_rank(decrement_rank(next_task.rank))
+  end
+
+  defp rank_reordered_task(previous_task, nil) do
+    get_next_unique_rank(increment_rank(previous_task.rank))
+  end
+
+  defp rank_reordered_task(previous_task, next_task) do
+    previous_rank = String.to_integer(previous_task.rank)
+    next_rank = String.to_integer(next_task.rank)
+    distance = abs(next_rank - previous_rank)
+    new_rank = to_string(previous_rank + div(distance, 2))
+    IO.inspect(new_rank)
+    get_next_unique_rank(new_rank)
   end
 end
