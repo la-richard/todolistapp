@@ -18,7 +18,7 @@
       </div>
     </div>
   </div>
-  <div class="w-[40rem] sm:w-full" id="task-list" phx-hook="sortable" data-list-id="task-list">
+  <div class="w-[40rem] sm:w-full" id="task-list" phx-hook="sortable" phx-update="stream" data-list-id="task-list">
     <div :for={row <- @streams.tasks} class="item w-full flex py-1 hover:bg-slate-400/20" id={elem(row, 0)} data-task-id={elem(row, 1).id}>
       <div class="flex justify-center w-14">
         <.task_status status={elem(row, 1).status} />
