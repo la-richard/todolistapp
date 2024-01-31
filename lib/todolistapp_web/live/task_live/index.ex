@@ -30,15 +30,24 @@ defmodule TodolistappWeb.TaskLive.Index do
     |> assign(:task, nil)
   end
 
-  def handle_info({TodolistappWeb.TaskLive.TaskForm, {:saved, task}}, socket) do
-    {:noreply, stream_insert(socket, :tasks, task)}
+  def handle_info({TodolistappWeb.TaskLive.TaskForm, {:saved, _}}, socket) do
+    {:noreply, socket |> stream(:tasks, Tasks.list_tasks(), reset: true)}
   end
 
   def handle_event("delete", %{"id" => id}, socket) do
     task = Tasks.get_task!(id)
     {:ok, _} = Tasks.delete_task(task)
 
-    {:noreply, socket |> stream_delete(:tasks, task) |> put_flash(:info, "Task deleted successfully!")}
+    {:noreply, socket |> put_flash(:info, "Task deleted successfully!") |> stream(:tasks, Tasks.list_tasks(), reset: true)}
+  end
+
+  def handle_event("sort", params, socket) do
+    Tasks.reorder_task(
+      Map.get(params, "movedId"),
+      Map.get(params, "previousSiblingId"),
+      Map.get(params, "nextSiblingId")
+    )
+    {:noreply, socket |> stream(:tasks, Tasks.list_tasks(), reset: true)}
   end
 
 end

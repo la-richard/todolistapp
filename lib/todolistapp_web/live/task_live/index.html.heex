@@ -7,27 +7,41 @@
   </:actions>
 </.header>
 
-<.table id="tasks" rows={@streams.tasks} row_click={fn {_id, task} -> JS.navigate(~p"/#{task}/show") end}>
-  <:col :let={{_id, task}} label="Status" class="w-14">
-    <div class="flex justify-center">
-      <.task_status status={task.status} />
+<div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
+  <div class="w-[40rem] mt-11 sm:w-full">
+    <div class="w-full flex text-sm leading-6 text-zinc-500">
+      <div class="flex justify-center w-14">
+        Status
+      </div>
+      <div class="flex flex-grow">
+        Title
+      </div>
     </div>
-  </:col>
-  <:col :let={{_id, task}} label="Title">
-    <%= task.title %>
-  </:col>
-  <:action :let={{_id, task}}>
-    <div class="sr-only">
-      <.link navigate={~p"/#{task}/show"}>Show</.link>
+  </div>
+  <div class="w-[40rem] sm:w-full" id="task-list" phx-hook="sortable" data-list-id="task-list">
+    <div :for={row <- @streams.tasks} class="item w-full flex py-1 hover:bg-slate-400/20" id={elem(row, 0)} data-task-id={elem(row, 1).id}>
+      <div class="flex justify-center w-14">
+        <.task_status status={elem(row, 1).status} />
+      </div>
+      <div class="flex flex-grow">
+        <%= elem(row, 1).title %>
+      </div>
+      <div class="flex font-semibold leading-6 text-zinc-900 hover:text-zinc-700">
+        <div class="w-14">
+          <.link navigate={~p"/#{elem(row, 1)}/show"}>Show</.link>
+        </div>
+        <div class="w-14">
+          <.link patch={~p"/#{elem(row, 1)}/edit"}>Edit</.link>
+        </div>
+        <div class="w-14">
+          <.link phx-click={JS.push("delete", value: %{id: elem(row, 1).id})} data-confirm="Are you sure?">
+            Delete
+          </.link>
+        </div>
+      </div>
     </div>
-    <.link patch={~p"/#{task}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={{_id, task}}>
-    <.link phx-click={JS.push("delete", value: %{id: task.id})} data-confirm="Are you sure?">
-      Delete
-    </.link>
-  </:action>
-</.table>
+  </div>
+</div>
 
 <.modal :if={@live_action in [:new, :edit]} id="task-modal" show on_cancel={JS.patch(~p"/")}>
   <.live_component
