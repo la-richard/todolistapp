@@ -6,6 +6,7 @@ defmodule Todolistapp.Tasks.Task do
     field :status, Ecto.Enum, values: [:to_do, :in_progress, :completed], default: :to_do
     field :title, :string
     field :details, :string
+    field :rank, :string
 
     timestamps(type: :utc_datetime)
   end
@@ -13,8 +14,9 @@ defmodule Todolistapp.Tasks.Task do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:title, :details, :status])
-    |> validate_required([:title, :status])
+    |> cast(attrs, [:title, :details, :status, :rank])
+    |> validate_required([:title, :status, :rank])
+    |> unique_constraint(:rank)
   end
 
 end
