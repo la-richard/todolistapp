@@ -42,12 +42,14 @@ defmodule TodolistappWeb.TaskLive.Index do
   end
 
   def handle_event("sort", params, socket) do
-    Tasks.reorder_task(
+    case Tasks.reorder_task(
       Map.get(params, "movedId"),
       Map.get(params, "previousSiblingId"),
       Map.get(params, "nextSiblingId")
-    )
-    {:noreply, socket}
+    ) do
+      {:ok, _} -> {:noreply, put_flash(socket, :info, "Task order updated successfully!")}
+      {:error, _changeset} -> {:noreply, put_flash(socket, :error, "Unable to update task order.")}
+    end
   end
 
 end

@@ -28,6 +28,7 @@ const hooks = {}
 hooks.sortable = {
   mounted() {
     new Sortable(this.el, {
+      group: "task_list",
       animation: 150,
       delay: 100,
       dragClass: "item",
