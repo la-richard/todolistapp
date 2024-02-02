@@ -1,0 +1,68 @@
+<.header>
+  Task Board
+  <:actions>
+    <.link patch={~p"/"}>
+      <.button>View List</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<div class="flex flex-row gap-2 mt-11">
+  <div class="flex flex-col gap-2 flex-grow">
+    <h1>TO DO</h1>
+    <div
+      class="flex flex-col w-full gap-2"
+      id="to_do_items"
+      data-group="to_do_items"
+      phx-hook="sortable"
+      phx-update="stream"
+    >
+      <div
+        :for={row <- @streams.to_do}
+        class="border border-solid border-black h-28 p-2 cursor-pointer"
+        id={elem(row, 0)}
+        data-task-id={elem(row, 1).id}
+      >
+        <p><%= elem(row, 1).title %></p>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col gap-2 flex-grow">
+    <h1>IN PROGRESS</h1>
+    <div
+      class="flex flex-col w-full gap-2"
+      id="in_progress_items"
+      data-group="in_progress_items"
+      phx-hook="sortable"
+      phx-update="stream"
+    >
+      <div
+        :for={row <- @streams.in_progress}
+        class="border border-solid border-black h-28 p-2 cursor-pointer"
+        id={elem(row, 0)}
+        data-task-id={elem(row, 1).id}
+      >
+        <p><%= elem(row, 1).title %></p>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col gap-2 flex-grow">
+    <h1>COMPLETED</h1>
+    <div
+      class="flex flex-col w-full gap-2"
+      id="completed_items"
+      data-group="completed_items"
+      phx-hook="sortable"
+      phx-update="stream"
+    >
+      <div
+        :for={row <- @streams.completed}
+        class="border border-solid border-black h-28 p-2 cursor-pointer"
+        id={elem(row, 0)}
+        data-task-id={elem(row, 1).id}
+      >
+        <p><%= elem(row, 1).title %></p>
+      </div>
+    </div>
+  </div>
+</div>

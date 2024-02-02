@@ -20,6 +20,8 @@ defmodule TodolistappWeb.Router do
     live "/", TaskLive.Index, :index
     live "/new", TaskLive.Index, :new
 
+    live "/board", BoardLive.Index, :index
+
     live "/:id", TaskLive.Index, :show
     live "/:id/edit", TaskLive.Index, :edit
   end

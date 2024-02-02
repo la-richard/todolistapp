@@ -21,6 +21,10 @@ defmodule Todolistapp.Tasks do
     Repo.all(from(t in Task, order_by: [asc: t.rank]))
   end
 
+  def list_tasks(status) do
+    Repo.all(from(t in Task, where: t.status == ^status, order_by: [asc: t.rank]))
+  end
+
   @doc """
   Gets a single task.
 
@@ -158,5 +162,20 @@ defmodule Todolistapp.Tasks do
     new_rank = to_string(previous_rank + div(distance, 2))
 
     get_next_unique_rank(new_rank)
+  end
+
+  def update_status_and_reorder(task_id, status, previous_task_id, next_task_id) do
+    task = Repo.get(Task, task_id)
+    previous_task = if previous_task_id, do: Repo.get(Task, previous_task_id), else: nil
+    next_task = if next_task_id, do: Repo.get(Task, next_task_id), else: nil
+
+    rank = rank_reordered_task(
+      previous_task,
+      next_task
+    )
+
+    task
+    |> Task.changeset(%{"status" => status, "rank" => rank})
+    |> Repo.update()
   end
 end

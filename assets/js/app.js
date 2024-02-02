@@ -27,19 +27,40 @@ const hooks = {}
 
 hooks.sortable = {
   mounted() {
+    const children = Array.from(this.el.children)
     new Sortable(this.el, {
-      group: "task_list",
+      group: {
+        name: this.el.dataset?.group,
+        pull: true,
+        put: true,
+      },
       animation: 150,
       delay: 100,
+      delayOnTouchOnly: true,
       dragClass: "item",
       ghostClass: "bg-slate-400",
       forceFallback: true,
       onEnd: e => {
+        if (e.oldIndex === e.newIndex) {
+          return
+        }
+
         const elements = Array.from(this.el.children)
+        const fromList = e.from?.getAttribute("data-group")
+        const toList = e.to?.getAttribute("data-group")
+        const toListElements = Array.from(e.to?.children)
         let params = {
-          movedId: elements[e.newIndex].getAttribute("data-task-id"),
-          previousSiblingId: elements[e.newIndex - 1]?.getAttribute("data-task-id"),
-          nextSiblingId: elements[e.newIndex + 1]?.getAttribute("data-task-id")
+          movedId: fromList === toList ?
+            elements[e.newIndex].getAttribute("data-task-id") :
+            toListElements[e.newIndex].getAttribute("data-task-id"),
+          previousSiblingId: fromList === toList ?
+            elements[e.newIndex - 1]?.getAttribute("data-task-id") :
+            toListElements[e.newIndex - 1]?.getAttribute("data-task-id"),
+          nextSiblingId: fromList === toList ?
+            elements[e.newIndex + 1]?.getAttribute("data-task-id") :
+            toListElements[e.newIndex + 1]?.getAttribute("data-task-id"),
+          fromList,
+          toList
         }
         this.pushEventTo(this.el, "sort", params)
       }
@@ -63,4 +84,3 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
-
