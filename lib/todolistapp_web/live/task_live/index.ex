@@ -30,6 +30,13 @@ defmodule TodolistappWeb.TaskLive.Index do
     |> assign(:task, nil)
   end
 
+  defp apply_action(socket, :show, %{"id" => id}) do
+    task = Tasks.get_task!(id)
+    socket
+    |> assign(:page_title, task.title)
+    |> assign(:task, task)
+  end
+
   def handle_info({TodolistappWeb.TaskLive.TaskForm, {:saved, task}}, socket) do
     {:noreply, stream_insert(socket, :tasks, task)}
   end
@@ -42,11 +49,10 @@ defmodule TodolistappWeb.TaskLive.Index do
   end
 
   def handle_event("sort", params, socket) do
-    case Tasks.reorder_task(
-      Map.get(params, "movedId"),
-      Map.get(params, "previousSiblingId"),
-      Map.get(params, "nextSiblingId")
-    ) do
+    moved_id = Map.get(params, "movedId")
+    next_sibling_id = Map.get(params, "nextSiblingId")
+    previous_sibling_id = Map.get(params, "previousSiblingId")
+    case Tasks.reorder_task(moved_id, previous_sibling_id, next_sibling_id) do
       {:ok, _} -> {:noreply, put_flash(socket, :info, "Task order updated successfully!")}
       {:error, _changeset} -> {:noreply, put_flash(socket, :error, "Unable to update task order.")}
     end

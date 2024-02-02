@@ -19,7 +19,12 @@
     </div>
   </div>
   <div class="w-[40rem] sm:w-full" id="task-list" phx-hook="sortable" phx-update="stream" data-list-id="task-list">
-    <div :for={row <- @streams.tasks} class="item w-full flex py-1 hover:bg-slate-400/20" id={elem(row, 0)} data-task-id={elem(row, 1).id}>
+    <div
+      :for={row <- @streams.tasks}
+      class="item w-full h-14 flex items-center py-1 hover:bg-slate-400/20 cursor-pointer"
+      id={elem(row, 0)}
+      data-task-id={elem(row, 1).id}
+    >
       <div class="flex justify-center w-14">
         <.task_status status={elem(row, 1).status} />
       </div>
@@ -28,7 +33,7 @@
       </div>
       <div class="flex font-semibold leading-6 text-zinc-900 hover:text-zinc-700">
         <div class="w-14">
-          <.link navigate={~p"/#{elem(row, 1)}/show"}>Show</.link>
+          <.link patch={~p"/#{elem(row, 1)}"}>Show</.link>
         </div>
         <div class="w-14">
           <.link patch={~p"/#{elem(row, 1)}/edit"}>Edit</.link>
@@ -52,4 +57,26 @@
     task={@task}
     patch={~p"/"}
   />
+</.modal>
+
+<.modal :if={@live_action == :show} id="task-modal" show on_cancel={JS.patch(~p"/")}>
+  <.header>
+    <%= @task.title %>
+    <:actions>
+      <.link patch={~p"/#{@task}/edit"}>
+        <.button>Edit task</.button>
+      </.link>
+    </:actions>
+  </.header>
+  <.list>
+    <:item title="Details">
+      <div class="break-words whitespace-pre-wrap"><%= if @task.details != nil, do: @task.details, else: "N/A" %></div>
+    </:item>
+    <:item title="Status">
+      <div class="h-14 flex flex-row items-center gap-2">
+        <.task_status status={@task.status} />
+        <%= format_status(@task.status) %>
+      </div>
+    </:item>
+  </.list>
 </.modal>
